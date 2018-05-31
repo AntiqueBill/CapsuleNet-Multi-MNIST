@@ -4,7 +4,7 @@ modified from [XifengGuo/CapsNet-Keras](https://github.com/XifengGuo/CapsNet-Ker
 
 Needs Keras and Tensorflow
 
-84.5% accuracy...still working...
+84.5% accuracy...still working...It seems suffers from overfitting....
 
 First run mnist_shifted to generated datasets
 
