@@ -6,7 +6,11 @@ modified from [XifengGuo/CapsNet-Keras](https://github.com/XifengGuo/CapsNet-Ker
 
 Needs Keras and Tensorflow
 
-84.5% accuracy...still working...It seems suffers from overfitting....
+84.5% accuracy...still working...
+
+In the paper, 1000 samples are generated for each digits, but I only generated 1 sample
+
+As a result, the network suffers from overfitting....
 
 First run mnist_shifted to generated datasets
 
