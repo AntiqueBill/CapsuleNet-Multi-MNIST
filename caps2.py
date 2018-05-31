@@ -69,25 +69,8 @@ def train(model, data, args):
                      validation_data=[[x_test, y_test1], [y_test, x_test0, x_test1]], callbacks=[checkpoint, lr_decay])
     return hist.history
 
-def test(model, data, args):
-    print('-'*30 + 'Begin: test' + '-'*30)
-    x_test, y_test = data
-    y_pred, x_recon0, x_recon1 = model.predict(x_test, batch_size=args.batch_size)
-    _, y_pred = tf.nn.top_k(y_pred, 2)
-    _, y_test = tf.nn.top_k(y_test, 2)
-    y_pred = K.eval(y_pred)
-    y_test = K.eval(y_test)
-    y_pred.sort(axis=1)
-    y_pred = np.reshape(y_pred, np.prod(y_pred.shape))
-    y_test = np.reshape(y_test, np.prod(y_test.shape))
-    print('Test acc:', np.sum(y_pred == y_test)/y_test.shape[0])
-    return y_pred
-
-
 
     
-    print('-' * 30 + 'End: test' + '-' * 30)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Capsule Network on MNIST.")
@@ -155,7 +138,8 @@ if __name__ == "__main__":
     y_pred1 = np.reshape(y_pred1, np.prod(y_pred1.shape))
     y_test1 = np.reshape(y_test1, np.prod(y_test1.shape))
     print('Test acc:', np.sum(y_pred == y_test)/y_test.shape[0])
-        
+    print('-' * 30 + 'End: test' + '-' * 30)
+
 '''
     from keras.utils import plot_model
     plot_model(model, to_file='model.png',show_shapes = True)
