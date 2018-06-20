@@ -36,10 +36,17 @@ def CapsNet(input_shape, n_class, routings):
     masked1 =  Lambda(lambda x: x[:,1,:])(masked)
 
     decoder = models.Sequential(name='decoder')
-    decoder.add(layers.Dense(512, activation='sigmoid', input_dim=16))
-    decoder.add(layers.Dense(1024, activation='sigmoid'))
-    decoder.add(layers.Dense(np.prod(input_shape), activation='sigmoid'))
-    decoder.add(layers.Reshape(target_shape=input_shape, name='out_recon'))
+    decoder.add(layers.Reshape(target_shape=(4,4,1), input_shape = (16,)))
+    decoder.add(layers.ZeroPadding2D(((3,0),(3,0))))
+    
+    decoder.add(layers.UpSampling2D((2,2)))
+    decoder.add(layers.Conv2D(256,3,activation='relu',padding = 'same'))
+    decoder.add(layers.Conv2D(256,3,activation='relu',padding = 'same'))
+    
+    decoder.add(layers.UpSampling2D((2,2)))
+    decoder.add(layers.Conv2D(128,3,activation='relu',padding = 'same'))
+    decoder.add(layers.Conv2D(128,3,activation='relu',padding = 'same'))
+    decoder.add(layers.Conv2D(1,1))
 
     train_model = models.Model([x, y], [out_caps, decoder(masked_by_y0), decoder(masked_by_y1)])
     eval_model = models.Model(x, [out_caps, decoder(masked0), decoder(masked1)])
@@ -115,14 +122,14 @@ if __name__ == "__main__":
         history = train(model=model, data=(
                         (x_train, y_train), (x_test, y_test), (x_train0, x_train1), (x_test0, x_test1)
                         , (y_train1, y_test1)), args=args)
-        if args.plotplot == 1:    
+        if args.plot == 1:    
             train_loss = np.array(history['loss'])
             val_loss = np.array(history['val_loss'])
             plt.plot(np.arange(0, args.epochs, 1),train_loss,label="train_loss",color="red",linewidth=1.5)
             plt.plot(np.arange(0, args.epochs, 1),val_loss,label="val_loss",color="blue",linewidth=1.5)
             plt.legend()
             plt.show()
-            plt.savefig('loss.jpg')
+            plt.savefig('loss.png')
     else:
         model.load_weights(args.save_file)
         print('Loading %s' %args.save_file)
